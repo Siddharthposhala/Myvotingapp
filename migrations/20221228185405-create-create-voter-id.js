@@ -11,9 +11,11 @@ module.exports = {
       },
       persona: {
         type: Sequelize.STRING,
+        defaultValue: "Voter",
       },
       voterId: {
         type: Sequelize.STRING,
+        unique: true,
       },
       responseStatus: {
         type: Sequelize.BOOLEAN,

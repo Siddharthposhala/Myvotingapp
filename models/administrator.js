@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Administrator.hasMany(models.Create_election, {
+        foreignKey: "AdministratorId",
+      });
     }
   }
   Administrator.init(

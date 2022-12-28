@@ -9,6 +9,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Create_question.belongsTo(models.Create_election, {
+        foreignKey: "electionId",
+      });
+
+      Create_question.hasMany(models.Create_options, {
+        foreignKey: "quesId",
+      });
     }
   }
   Create_question.init(

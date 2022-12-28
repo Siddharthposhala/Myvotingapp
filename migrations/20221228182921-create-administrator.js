@@ -11,6 +11,7 @@ module.exports = {
       },
       persona: {
         type: Sequelize.STRING,
+        defaultValue: "Admins",
       },
       firstName: {
         type: Sequelize.STRING,
@@ -20,6 +21,8 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
       },
       password: {
         type: Sequelize.STRING,

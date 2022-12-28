@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Create_options.belongsTo(models.Create_question, {
+        foreignKey: "quesId",
+        onDelete: "CASCADE",
+      });
     }
   }
   Create_options.init(

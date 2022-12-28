@@ -9,6 +9,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Create_election.belongsTo(models.Administrator, {
+        foreignKey: "administratorId",
+      });
+      Create_election.hasMany(models.Create_question, {
+        foreignKey: "electionId",
+      });
+      Create_election.hasMany(models.Create_voterId, {
+        foreignKey: "electionId",
+      });
     }
   }
   Create_election.init(

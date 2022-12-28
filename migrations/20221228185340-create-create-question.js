@@ -11,6 +11,7 @@ module.exports = {
       },
       quesName: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       description: {
         type: Sequelize.STRING,
