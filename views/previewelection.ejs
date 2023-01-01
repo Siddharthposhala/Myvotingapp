@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <title>Election preview | Online Voting Platform</title>
+    <meta name="csrf-token" content="<%= csrf %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body style="background-color: lightskyblue;">
+    <div class="flex flex-col justify-center items-center p-4">
+      <div class="flex flex-col justify-center md:w-2/5 w-full">
+        <div class="pt-6">
+          <b>
+            <p class="text-black-600" align="center">ELECTION PREVIEW</p>
+          </b>
+        </div>
+        <div>
+            <% if (messages && messages.error && messages.error.length > 0) { %>
+                <% for(var i=0; i<messages.error.length; i++) { %>
+                    <p class="bg-black-100 my-3 rounded-md px-4 py-2"><%= messages.error[i] %></p>
+                <% } %>
+            <% } %>
+        </div>
+      </div>
+           <div>
+            <% for (let i=0; i<questions.length; i++) { %>
+                <div>
+                    <p class="font-bold text"><%= i+1 %>. <%= questions[i].questionname %></p>
+                    <p class="text-gray-600"><%= questions[i].description %></p>
+                    <div class="pt-3 pl-5">
+                        <% for (let j=0; j<options[i].length; j++) { %>
+                          <div class="flex gap-2">
+                            <input
+                                class="border-2 flex items-center border-black p-2"
+                                id="<%= questions[i].id %>-<%= options[i][j].id %>"
+                                type="radio"
+                                value="<%= options[i][j].id %>"
+                                name="<%= questions[i].id %>"
+                            />
+                            <label for="<%= questions[i].id %>-<%= options[i][j].id %>"><%= options[i][j].optionname %></label>
+                          </div>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+           </div>
+           <a href="/voters/listofelections/<%= election.id %>" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Home Page</a>
+        </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

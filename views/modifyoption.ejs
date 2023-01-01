@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <title>modify the options</title>
+    <meta name="csrf-token" content="<%= csrf %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body style="background-color: lightskyblue;">
+    <div class="flex flex-col justify-center items-center p-4">
+      <div class="flex flex-col justify-center md:w-2/5 w-full">
+        <div class="pt-6">
+            <b>
+          <p align="center">Modify Option</p>
+        </b>
+          <form
+            method="post"
+            action="/elections/<%= election.id %>/questions/<%= question.id %>/options/<%= option.id %>/modify"
+            class="flex flex-col gap-4 pt-4">
+            <input type="hidden" name="_csrf" value="<%= csrf %>" />
+            <div class="flex flex-col w-full">
+              <input
+                type="text"
+                name="optionname"
+                value="<%= option.optionname %>"
+                placeholder="optionname"
+                class="border-2 border-black p-2 rounded-lg"
+              />
+            </div>
+            <div class="flex justify-center gap-8">
+              <button
+                type="submit"
+                class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-3 py-1"
+              >
+                Modify
+              </button>
+              <a
+                href="/displayelections/correspondingquestion/<%= election.id %>/<%= question.id %>/options"
+                class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-3 py-1"
+              >
+                Cancel
+              </a>
+            </div>
+          </form>
+      </div>
+    </div>
+  </body>
+</html>
