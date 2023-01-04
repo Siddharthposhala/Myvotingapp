@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>New question</title>
+  </head>
+  <body>
+    <div style="background-color: lightskyblue">
+      <div
+        class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden"
+      >
+        <div class="relative py-3 sm:w-96 mx-auto text-center">
+          <span class="text-2xl font-light">Add a new Voter</span>
+          <div></div>
+          <div
+            class="mt-4 bg-white shadow-md rounded-lg text-left"
+            style="background-color: antiquewhite"
+          >
+            <div class="h-2 rounded-t-md"></div>
+            <form
+              action="/votercreate/<%= id %>"
+              method="post"
+              class="px-8 py-6"
+            >
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <label for="voterid" class="block mt-3 font-semibold"
+                >Voter ID</label
+              >
+              <input
+                id="voterid"
+                name="voterid"
+                type="text"
+                placeholder="Question"
+                class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                required
+              />
+              <label for="password" class="block mt-3 font-semibold"
+                >password</label
+              >
+              <textarea
+                id="password"
+                name="voterid"
+                class="border w-full px-2 py-1 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+              ></textarea>
+              <button
+                type="submit"
+                class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2 justify-right"
+              >
+                create
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
