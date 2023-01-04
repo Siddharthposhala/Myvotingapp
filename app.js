@@ -20,6 +20,7 @@ const {
   Create_question,
   Create_options,
   Create_voterId,
+  Answers,
 } = require("./models");
 
 const saltRounds = 10;
