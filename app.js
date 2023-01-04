@@ -102,11 +102,11 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
 passport.serializeUser((user, done) => {
-  done(null, { id: user.id, case: user.persona });
+  done(null, { id: user.id, persona: user.persona });
 });
 
 passport.deserializeUser((id, done) => {
-  if (iduser.persona === "Admins") {
+  if (id.persona === "Admins") {
     Administrator.findByPk(id.id)
       .then((user) => {
         done(null, user);
@@ -114,7 +114,7 @@ passport.deserializeUser((id, done) => {
       .catch((error) => {
         done(error, null);
       });
-  } else if (iduser.persona === "Voter") {
+  } else if (id.persona === "Voter") {
     Create_voterId.findByPk(id.id)
       .then((user) => {
         done(null, user);
@@ -346,8 +346,8 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.persona === "Admins") {
-      const adminId = request.user.id;
-      const admin = await Administrator.findByPk(adminId);
+      const AdministratorId = request.user.id;
+      const admin = await Administrator.findByPk(AdministratorId);
       const election = await Create_election.findByPk(
         request.params.electionId
       );
@@ -369,8 +369,8 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.persona === "Admins") {
-      const adminId = request.user.id;
-      const admin = await Administrator.findByPk(adminId);
+      const AdministratorId = request.user.id;
+      const admin = await Administrator.findByPk(AdministratorId);
       const election = await Create_election.findByPk(
         request.params.electionId
       );
@@ -656,7 +656,7 @@ app.post(
         await Create_election.addElections({
           electionName: request.body.electionName,
           publicurl: request.body.url,
-          adminId: request.user.id,
+          AdministratorId: request.user.id,
         });
         return response.redirect("/elections");
       } catch (error) {
