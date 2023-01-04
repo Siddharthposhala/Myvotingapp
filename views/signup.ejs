@@ -11,75 +11,57 @@
     </title>
 </head>
 
-<body style="background-color: bisque;">
-    <div class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6"
-        style="background-color: bisque;">
-        <div class="relative sm:w-96 mx-auto text-center">
-            <span class="text-2xl font-light ">Create Your admin account</span>
-            <div>
+<body>
+    <div class="grid grid-cols-3">
+        <div class="col-start-2 colspan-3">
+            <h1 class="text-2xl font-semibold text-gray-600">
+                <a href="#" class="text-green-600">ONLINE VOTEING APPLICATION</a>
+            </h1>
+            <div class="py-3">
+                <h6 class="py-4">Create Your admin account</h6>
             </div>
-            <div style="background-color: bisque;">
-                <form action="/admin" method="post" class="px-8 py-6">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                    <table>
-                        <tr>
-                            <td>
-                                <label for="firstName">First name</label>
-                                <input id="firstName" name="firstName" type="text" placeholder="First name"
-                                    class="border border-gray-300 text-gray-900 rounded p-2 w-full">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="lastName">Last name</label>
-                                <input id="lastName" name="lastName" type="text" placeholder="Last name"
-                                    class="border border-gray-300 text-gray-900 rounded p-2 w-full">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="email">Email</label>
-                                <input id="email" name="email" type="email" placeholder="Email"
-                                    class="border border-gray-300 text-gray-900 rounded p-2 w-full">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="password">Password</label>
-                                <input id="password" name="password" type="password" placeholder="Password"
-                                    class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <button type="submit"
-                                    class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-3 py-1">Sign
-                                    up</button><br>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h1> Existing user? <a href="/login"
-                                        class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-3 py-1">
-                                        Sign in</a></h1>
-                            </td>
-                        </tr>
-                    </table>
-            </div>
+            <form action="/admin" method="post" class="px-8 py-6">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <div class="py-3">
+                    <label for="firstName">First name : </label>
+                    <input id="firstName" name="firstName" type="text" placeholder="First name"
+                        class="border border-gray-300 rounded text-gray-900 w-full p-2" />
+                </div>
+                <div class="py-3">
+                    <label for="lastname">Last name : </label>
+                    <input id="lastName" name="lastName" type="text" placeholder="Last name"
+                        class="border border-gray-300 rounded text-gray-900 w-full p-2" />
+                </div>
+                <div class="py-3">
+                    <label for="email">Email Id : </label>
+                    <input id="email" name="email" type="email" placeholder="Email"
+                        class="border border-gray-300 rounded text-gray-900 w-full p-2" />
+                </div>
+                <div class="py-3">
+                    <label for="password">Password : </label>
+                    <input id="password" name="password" type="password" placeholder="Password"
+                        class="border border-gray-300 rounded text-gray-900 w-full p-2" />
+                </div>
+                <div class="py-3">
+                    <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded font-medium mr-2 mb-2">
+                        signup
+                    </button>
+                    <a href="/" class="bg-green-600 text-white px-5 py-2.5 rounded font-medium ml-10 mb-2">
+                        Cancel</a>
+                </div>
+                <div class="py-3">
+                    <% if(messages && messages.error && messages.error.length> 0) { %>
+                        <% for(var i=0; i<messages.error.length; i++) { %>
+                            <div class=" text-red-600">
+                                <li>
+                                    <%= messages.error[i] %>
+                                </li>
+                            </div>
+                            <% } %>
+                                <% } %>
+                </div>
             </form>
-            <% if(messages && messages.error && messages.error.length> 0) { %>
-                <% for(var i=0; i<messages.error.length; i++) { %>
-                    <div class="bg-red-300 text-red-900 p-2 rounded-lg shadow">
-                        <li>
-                            <%= messages.error[i] %>
-                        </li>
-                    </div>
-                    <% } %>
-                        <% } %>
         </div>
-        </table>
-
-    </div>
     </div>
 </body>
 

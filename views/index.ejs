@@ -8,39 +8,21 @@
     <link rel="stylesheet" href="./css/style.css" />
     <title><%= title %></title>
   </head>
-  <body style="background-color: cornsilk">
-    <div class="container flex flex-wrap items-center justify-between mx-auto">
-      <b>
-        <p class="py=4">
-          <span
-            class="self-center text-xl font-semibold whitespace-nowrap text-black-800 py-3"
-            >welcome to online voting platform
-          </span>
+
+  <body>
+    <div class="grid grid-cols-3">
+      <div class="col-start-2 colspan-3">
+        <h1 class="text-2xl font-semibold text-gray-600">
+          <a href="#" class="text-green-600">ONLINE VOTEING APPLICATION</a>
+        </h1>
+        <p class="py-2">welcome to Online Voting Platform</p>
+        <p class="py-2">
+          New here? <a class="text-green-600" href="/signup">Sign-up</a>
         </p>
-      </b>
+        <p class="py-2">
+          Existing user? <a class="text-green-600" href="/login">Sign-in</a>
+        </p>
+      </div>
     </div>
-    <table align="center">
-      <tr>
-        <td>
-          <b>
-            <p class="py-3">ONLINE VOTEING APP</p>
-          </b>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class="py-1">
-            New here? <a class="text-green-600" href="/signup">Sign-up</a>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p class="py-1">
-            Existing user? <a class="text-green-600" href="/login">Sign-in</a>
-          </p>
-        </td>
-      </tr>
-    </table>
   </body>
 </html>

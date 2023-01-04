@@ -8,40 +8,52 @@
     <title><%= title %></title>
 </head>
 <body>
-    <div class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12" style="background-color: bisque;">
-        <div class="relative py-3  mx-auto text-center">
-            <b>
-            <span class="text-2xl font-light ">Login to your account</span>
-        </b>
-            <div> 
+    <div class="grid grid-cols-3">
+        <div class="col-start-2 colspan-3">
+            <h1 class="text-2xl font-semibold text-gray-600">
+                <a href="#" class="text-green-600">ONLINE VOTEING APPLICATION</a>
+              </h1>
+          <div class="py-3">
+            <h6 class="py-4">Login to your account</h6>
+          </div>
+          <form action="/session" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrfToken%>" />
+            <div class="py-3">
+              <label for="email">Email Id : </label>
+              <input
+                id="email" name="email" type="email" placeholder="email"
+                class="border border-gray-300 rounded text-gray-900 w-full p-2"
+              />
             </div>
-            <div class="mt-4 bg-white shadow-md rounded-lg text-left" style="background-color: cornsilk;">
-    
-                <form action="/session" method="post" class="px-8 py-6">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                    <div>
-                    <label for="email"  class="border border-gray-300 text-gray-900 rounded ">Email</label>
-                    <input id="email" name="email" type="email" placeholder="email" class="border border-gray-300 text-gray-900 rounded p-2 w-full" >
-                    </div>
-                    <div>
-                    <label for="password" class="border border-gray-300 text-gray-900 rounded ">Password</label>
-                    <input id="password" name="password" type="password" placeholder="password" class="border border-gray-300 text-gray-900 rounded p-2 w-full">
-                    </div>
-                    <div class="py-3"> 
-                        <button type="submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Sign in</button>        
-                     </div> 
-                </form>
+            <div class="py-3">
+              <label for="password">Password : </label>
+              <input
+                 id="password" name="password" type="password" placeholder="password" 
+                class="border border-gray-300 rounded text-gray-900 w-full p-2"
+              />
             </div>
+            <div class="py-3">
+              <button
+                type="submit"
+                class="bg-green-600 text-white px-5 py-2 rounded font-medium mr-2 mb-2"
+              >
+                sign in
+              </button>
+              <a href="/"
+              class="bg-green-600 text-white px-5 py-2.5 rounded font-medium ml-10 mb-2">
+            Cancel</a> 
+            </div>
+            <div class="py-3">
+                <% if(messages && messages.error && messages.error.length > 0)  { %>
+                    <% for(var i=0; i<messages.error.length; i++) { %>
+                           <div class="text-red-600">
+                            <li> <%= messages.error[i] %></li>
+                           </div>
+                    <% } %>
+                  <% } %>
+            </div>
+          </form>
         </div>
-        <% if(messages && messages.error && messages.error.length > 0)  { %>
-            <% for(var i=0; i<messages.error.length; i++) { %>
-                   <div class="bg-red-300 text-red-900 p-2 rounded-lg shadow">
-                    <center>
-                    <li> <%= messages.error[i] %></li>
-                </center>
-                   </div>
-            <% } %>
-          <% } %>
-    </div>
+      </div>
 </body>
 </html>

@@ -1,70 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title></title>
-  </head>
-
-  <body>
-    <div
-      class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12"
-      style="background-color: lightblue"
-    >
-      <div class="relative py-3 mx-auto text-center">
-        <b>
-          <span class="text-2xl font-light">Login To Caste Vote</span>
+</head>
+<body>
+    <div class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12" style="background-color: lightblue;">
+        <div class="relative py-3  mx-auto text-center">
+            <b>
+            <span class="text-2xl font-light ">Login To Caste Vote</span>
         </b>
-        <div></div>
-        <div
-          class="mt-4 bg-white shadow-md rounded-lg text-left"
-          style="background-color: cornsilk"
-        >
-          <form action="/vote/<%=publicurl%>" method="post" class="px-8 py-6">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <div>
-              <label
-                for="voterid"
-                class="border border-gray-300 text-gray-900 rounded"
-                >VoterID</label
-              >
-              <input
-                id="voterid"
-                name="voterid"
-                type="voterid"
-                placeholder="voterID"
-                class="border border-gray-300 text-gray-900 rounded p-2 w-full"
-                required
-              />
             </div>
-            <div>
-              <label
-                for="password"
-                class="border border-gray-300 text-gray-900 rounded"
-                >Password</label
-              >
-              <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="password"
-                class="border border-gray-300 text-gray-900 rounded p-2 w-full"
-                required
-              />
+            <div class="mt-4 bg-white shadow-md rounded-lg text-left" style="background-color: cornsilk;">
+    
+                <form action="/vote/<%=publicurl%>" method="post" class="px-8 py-6">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <div>
+                    <label for="voterid"  class="border border-gray-300 text-gray-900 rounded ">VoterID</label>
+                    <input id="voterid" name="voterid" type="voterid" placeholder="voterID" class="border border-gray-300 text-gray-900 rounded p-2 w-full" required>
+                    </div>
+                    <div>
+                    <label for="password" class="border border-gray-300 text-gray-900 rounded ">Password</label>
+                    <input id="password" name="password" type="password" placeholder="password" class="border border-gray-300 text-gray-900 rounded p-2 w-full" required>
+                    </div>
+                    <div class="py-3"> 
+                        <button type="submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Sign in</button>        
+                     </div> 
+                </form>
             </div>
-            <div class="py-3">
-              <button
-                type="submit"
-                class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"
-              >
-                Sign in
-              </button>
-            </div>
-          </form>
         </div>
-      </div>
+        <% if(messages && messages.error && messages.error.length > 0)  { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                   <div class="bg-red-300 text-red-1000 p-2 rounded-lg shadow">
+                    <center>
+                        <b>
+                    <li> <%= messages.error[i] %></li>
+                </b>
+                </center>
+                   </div>
+            <% } %>
+          <% } %>   
     </div>
-  </body>
+</body>
 </html>

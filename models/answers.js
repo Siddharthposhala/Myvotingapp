@@ -11,26 +11,24 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
     static associate(models) {
-      answers.belongsTo(models.Election, {
+      Answers.belongsTo(models.Create_election, {
         foreignKey: "ElectionId",
       });
 
-      answers.belongsTo(models.questions, {
+      Answers.belongsTo(models.Create_question, {
         foreignKey: "QuestionId",
       });
 
-      answers.belongsTo(models.Voters, {
+      Answers.belongsTo(models.Create_voterId, {
         foreignKey: "VoterId",
       });
-      answers.belongsTo(models.options, {
+      Answers.belongsTo(models.Create_options, {
         foreignKey: "optionChoosed",
       });
     }
   }
   Answers.init(
-    {
-      id: DataTypes.INTEGER,
-    },
+    {},
     {
       sequelize,
       modelName: "Answers",

@@ -1,53 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>
-        <%= title %>
-    </title>
+    <title><%= title %></title>
 </head>
-<b>
-    <a href="/elections"><span class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-3 py-1">Go
-            Back</a></span>
-</b>
-
+    <b>
+        <a href="/elections"><span class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-3 py-1">Go Back</a></span>
+    </b>
 <body style="background-color: cornsilk;">
     <div class="relative  text-gray-800 flex-col justify-center  bg-gray-50 py-6 " style="background-color: cornsilk;">
         <div class="relative py-3 sm:w-96 mx-auto text-center">
             <b>
-                <span class="text-2xl font-dark ">Create a New Election</span>
-            </b>
+            <span class="text-2xl font-dark ">Create a New Election</span>
+          </b>
             <div>
 
-                <div class="mt-4 bg-white shadow-md rounded-lg text-left" style="background-color: darkgray;">
-                    <form action="/elections" method="post" class="px-8 py-6">
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                        <label for="electionName" class="block mt-3 font-semibold">election name</label>
-                        <input id="electionName" name="electionName" type="text" placeholder="Election name"
-                            class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md">
-                        <label for="publicurl" class="block mt-3 font-semibold">Enter a Public URL(custom)</label>
-                        <input id="publicurl" name="publicurl" type="text" placeholder="Election Public URL"
-                            class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md">
-                        <button type="submit"
-                            class="mt-6 w-full bg-green-600 text-white py-2 px-6 rounded-md hover:bg-white-600 ">Create</button>
-                    </form>
-                </div>
+            <div class="mt-4 bg-white shadow-md rounded-lg text-left" style="background-color: darkgray;">
+                <form action="/elections" method="post" class="px-8 py-6">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <label for="electionName" class="block mt-3 font-semibold">election name</label>
+                    <input id="electionName" name="electionName" type="text" placeholder="Election name" class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" >
+                    <label for="publicurl" class="block mt-3 font-semibold">Enter a Public URL(custom)</label>
+                    <input id="publicurl" name="publicurl" type="text" placeholder="Election Public URL" class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md">
+                    <button type="submit" class="mt-6 w-full bg-green-600 text-white py-2 px-6 rounded-md hover:bg-white-600 ">Create</button>
+                </form> 
             </div>
-            <% if(messages && messages.error && messages.error.length> 0) { %>
-                <% for(var i=0; i<messages.error.length; i++) { %>
-                    <div class="bg-red-300 text-red-900 p-2 rounded-lg shadow">
-                        <li>
-                            <%= messages.error[i] %>
-                        </li>
-                    </div>
-                    <% } %>
-                        <% } %>
         </div>
+        <% if(messages && messages.error && messages.error.length > 0)  { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                   <div class="bg-red-300 text-red-900 p-2 rounded-lg shadow">
+                    <li> <%= messages.error[i] %></li>
+                   </div>
+            <% } %>
+          <% } %> 
+    </div>
     </div>
 </body>
-
 </html>

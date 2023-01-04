@@ -36,13 +36,11 @@
                 </div>
             </div>
             <div class="bg-black-600 px-2 py-1 hover:bgblack-600">
-                <b>
-                <a href="/createvoter/<%=id%>" class="text-black-600">Add a new Voter</a>
-            </b>
+                <a href="/createvoter/<%=id%>" class="text-white bg-gray-600 hover:bg-gray-900 font-medium rounded px-4 py-2">Add a new Voter</a>
             </div>
-            <div class="bg-black-600 px-2 py-1 hover:bgblack-600">
+            <div class="bg-black-600 px-2 py-3 hover:bgblack-600">
                  <b>
-                <a href="listofelections/<%=id%>" class="text-black-600">GO BACK</a>
+                <a href="listofelections/<%=id%>" class="text-white bg-gray-600 hover:bg-gray-900 font-medium rounded px-4 py-2">GO BACK</a>
             </b>
             </div>
         </div>
@@ -70,7 +68,7 @@
                                     </div>
                                      <% if((voters.length) >1) {%> 
                                     <div class="rounded w-fit px-2 py-1 flex gap-2 cursor-pointer hover:text-600">    
-                                        <a onclick="removevoter('<%= voters[i].id %>')" class="text-sm">delete voter</a>
+                                        <a onclick="removevoter(`<%= voters[i].id %>`)" class="text-sm">delete voter</a>
                                          <%} %>
                                        
                                     </div>
