@@ -64,7 +64,7 @@ passport.use(
           }
         })
         .catch(() => {
-          return done(null, false, { message: "Invalid Email-ID!!!!" });
+          return done(null, false, { message: "Invalid Email-Id!!!!" });
         });
     }
   )
@@ -90,7 +90,7 @@ passport.use(
         })
         .catch(() => {
           return done(null, false, {
-            message: "invalid ID",
+            message: "invalid Id",
           });
         });
     }
@@ -226,7 +226,7 @@ app.post(
         await Election.addElections({
           electionName: request.body.electionName,
           publicurl: request.body.publicurl,
-          adminID: request.user.id,
+          adminId: request.user.id,
         });
         return response.redirect("/elections");
       } catch (error) {
@@ -412,7 +412,7 @@ app.post(
 
       try {
         const question = await questions.addquestion({
-          electionID: request.params.id,
+          electionId: request.params.id,
           questionname: request.body.questionname,
           description: request.body.description,
         });
@@ -428,21 +428,21 @@ app.post(
 );
 
 app.get(
-  "/displayelections/correspondingquestion/:id/:questionID/options",
+  "/displayelections/correspondingquestion/:id/:questionId/options",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.case === "admins") {
       try {
         const question = await questions.retrievequestion(
-          request.params.questionID
+          request.params.questionId
         );
-        const option = await options.retrieveoptions(request.params.questionID);
+        const option = await options.retrieveoptions(request.params.questionId);
         if (request.accepts("html")) {
           response.render("questiondisplay", {
             title: question.questionname,
             description: question.description,
             id: request.params.id,
-            questionID: request.params.questionID,
+            questionId: request.params.questionId,
             option,
             csrfToken: request.csrfToken(),
           });
@@ -475,23 +475,23 @@ app.delete(
 );
 
 app.post(
-  "/displayelections/correspondingquestion/:id/:questionID/options",
+  "/displayelections/correspondingquestion/:id/:questionId/options",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.case === "admins") {
       if (!request.body.optionname) {
         request.flash("error", "Option can not be empty");
         return response.redirect(
-          `/displayelections/correspondingquestion/${request.params.id}/${request.params.questionID}/options`
+          `/displayelections/correspondingquestion/${request.params.id}/${request.params.questionId}/options`
         );
       }
       try {
         await options.addoption({
           optionname: request.body.optionname,
-          questionID: request.params.questionID,
+          questionId: request.params.questionId,
         });
         return response.redirect(
-          `/displayelections/correspondingquestion/${request.params.id}/${request.params.questionID}/options/`
+          `/displayelections/correspondingquestion/${request.params.id}/${request.params.questionId}/options/`
         );
       } catch (error) {
         console.log(error);
@@ -517,14 +517,14 @@ app.delete(
   }
 );
 app.get(
-  "/elections/:electionID/questions/:questionID/modify",
+  "/elections/:electionId/questions/:questionId/modify",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.case === "admins") {
-      const adminID = request.user.id;
-      const admin = await Admin.findByPk(adminID);
-      const election = await Election.findByPk(request.params.electionID);
-      const Question = await questions.findByPk(request.params.questionID);
+      const adminId = request.user.id;
+      const admin = await Admin.findByPk(adminId);
+      const election = await Election.findByPk(request.params.electionId);
+      const Question = await questions.findByPk(request.params.questionId);
       response.render("modifyquestion", {
         username: admin.name,
         election: election,
@@ -535,7 +535,7 @@ app.get(
   }
 );
 app.post(
-  "/elections/:electionID/questions/:questionID/modify",
+  "/elections/:electionId/questions/:questionId/modify",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.case === "admins") {
@@ -545,26 +545,26 @@ app.post(
           "Question can not be less than three characters"
         );
         return response.redirect(
-          `/elections/${request.params.electionID}/questions/${request.params.questionID}/modify`
+          `/elections/${request.params.electionId}/questions/${request.params.questionId}/modify`
         );
       }
       const questionexist = await questions.findquestion(
-        request.params.electionID,
+        request.params.electionId,
         request.body.questionname
       );
       if (questionexist) {
         request.flash("error", "Sorry!! the question already used");
         return response.redirect(
-          `/elections/${request.params.electionID}/questions/${request.params.questionID}/modify`
+          `/elections/${request.params.electionId}/questions/${request.params.questionId}/modify`
         );
       }
       try {
         await questions.modifyquestion(
           request.body.questionname,
           request.body.description,
-          request.params.questionID
+          request.params.questionId
         );
-        response.redirect(`/questions/${request.params.electionID}`);
+        response.redirect(`/questions/${request.params.electionId}`);
       } catch (error) {
         console.log(error);
         return;
@@ -573,15 +573,15 @@ app.post(
   }
 );
 app.get(
-  "/elections/:electionID/questions/:questionID/options/:optionID/modify",
+  "/elections/:electionId/questions/:questionId/options/:optionId/modify",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.case === "admins") {
-      const adminID = request.user.id;
-      const admin = await Admin.findByPk(adminID);
-      const election = await Election.findByPk(request.params.electionID);
-      const Question = await questions.findByPk(request.params.questionID);
-      const option = await options.findByPk(request.params.optionID);
+      const adminId = request.user.id;
+      const admin = await Admin.findByPk(adminId);
+      const election = await Election.findByPk(request.params.electionId);
+      const Question = await questions.findByPk(request.params.questionId);
+      const option = await options.findByPk(request.params.optionId);
       response.render("modifyoption", {
         username: admin.name,
         election: election,
@@ -593,17 +593,17 @@ app.get(
   }
 );
 app.post(
-  "/elections/:electionID/questions/:questionID/options/:optionID/modify",
+  "/elections/:electionId/questions/:questionId/options/:optionId/modify",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.case === "admins") {
       try {
         await options.modifyoption(
           request.body.optionname,
-          request.params.optionID
+          request.params.optionId
         );
         response.redirect(
-          `/displayelections/correspondingquestion/${request.params.electionID}/${request.params.questionID}/options`
+          `/displayelections/correspondingquestion/${request.params.electionId}/${request.params.questionId}/options`
         );
       } catch (error) {
         console.log(error);
@@ -726,7 +726,7 @@ app.post(
   async (request, response) => {
     if (request.user.case === "admins") {
       if (request.body.voterid.length == 0) {
-        request.flash("error", "Voter ID Can not be null!!");
+        request.flash("error", "Voter Id Can not be null!!");
         return response.redirect(`/createvoter/${request.params.id}`);
       }
       if (request.body.password.length == 0) {
@@ -745,9 +745,9 @@ app.post(
         console.log(error);
         request.flash(
           "error",
-          "Sorry!! It Seems like VoterID is already in Use"
+          "Sorry!! It Seems like VoterId is already in Use"
         );
-        request.flash("error", "Kindly Use different VoterID");
+        request.flash("error", "Kindly Use different VoterId");
         return response.redirect(`/createvoter/${request.params.id}`);
       }
     }
@@ -755,12 +755,12 @@ app.post(
 );
 
 app.get(
-  "/elections/:electionID/voter/:voterID/edit",
+  "/elections/:electionId/voter/:voterId/edit",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.case === "admins") {
-      const election = await Election.findByPk(request.params.electionID);
-      const voter = await Voters.findByPk(request.params.voterID);
+      const election = await Election.findByPk(request.params.electionId);
+      const voter = await Voters.findByPk(request.params.voterId);
       console.log(voter);
       response.render("modifyvoters", {
         voter: voter,
@@ -772,16 +772,16 @@ app.get(
 );
 
 app.post(
-  "/elections/:electionID/voter/:voterID/modify",
+  "/elections/:electionId/voter/:voterId/modify",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.case === "admins") {
       try {
         await Voters.modifypassword(
-          request.params.voterID,
+          request.params.voterId,
           request.body.password
         );
-        response.redirect(`/voters/${request.params.electionID}`);
+        response.redirect(`/voters/${request.params.electionId}`);
       } catch (error) {
         console.log(error);
         return;
@@ -812,7 +812,7 @@ app.get(
   async (request, response) => {
     if (request.user.case === "admins") {
       const question = await questions.findAll({
-        where: { electionID: request.params.id },
+        where: { electionId: request.params.id },
       });
       if (question.length <= 1) {
         request.flash(
@@ -928,7 +928,7 @@ app.get("/vote/:publicurl/", async (request, response) => {
           publicurl: request.params.publicurl,
           id: election.id,
           title: election.electionName,
-          electionID: election.id,
+          electionId: election.id,
           question,
           optionsnew,
           csrfToken: request.csrfToken(),
@@ -953,17 +953,17 @@ app.get("/vote/:publicurl/endpage", async (request, response) => {
   response.render("endpage");
 });
 
-app.post("/:electionID/externalpage/:publicurl", async (request, response) => {
+app.post("/:electionId/externalpage/:publicurl", async (request, response) => {
   try {
-    let election = await Election.findByPk(request.params.electionID);
+    let election = await Election.findByPk(request.params.electionId);
     let questionslist = await questions.retrievequestion(election.id);
     for (let i = 0; i < questionslist.length; i++) {
       let questionid = `question-${questionslist[i].id}`;
       let chossedoption = request.body[questionid];
       await Answers.addResponse({
-        ElectionID: request.params.electionID,
-        QuestionID: questionslist[i].id,
-        VoterID: request.user.id,
+        ElectionId: request.params.electionId,
+        QuestionId: questionslist[i].id,
+        VoterId: request.user.id,
         chossedoption: chossedoption,
       });
     }

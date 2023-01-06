@@ -46,7 +46,7 @@
                                 <p class="ml-2 text-lg "><%= option[i].optionname %></p>
                                 <div class="flex gap-2 ">
                                 <div class="rounded w-fit px-2 py-1 flex gap-2">                                                                          
-                                    <a href="/elections/<%=id%>/questions/<%=questionID%>/options/<%=option[i].id%>/modify" class="text-sm">Edit option</a>
+                                    <a href="/elections/<%=id%>/questions/<%=questionId%>/options/<%=option[i].id%>/modify" class="text-sm">Edit option</a>
                                 </div>
                                 <div class="rounded w-fit px-2 py-1 flex gap-2">
                                               
@@ -58,7 +58,7 @@
                     <% } %>
                 </ol>
             </div>
-            <form action="/displayelections/correspondingquestion/<%=id%>/<%= questionID %>/options" method="post">
+            <form action="/displayelections/correspondingquestion/<%=id%>/<%= questionId %>/options" method="post">
              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                 <div class="flex gap-2 py-4">
                     <div class="flex-auto">
