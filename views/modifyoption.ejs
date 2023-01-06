@@ -16,7 +16,7 @@
             method="post"
             action="/elections/<%= election.id %>/questions/<%= question.id %>/options/<%= option.id %>/modify"
             class="flex flex-col gap-4 pt-4">
-            <input type="hidden" name="_csrf" value="<%= csrf %>" />
+           <input type="hidden" name="_csrf" value="<%= csrf %>" />
             <div class="flex flex-col w-full">
               <input
                 type="text"

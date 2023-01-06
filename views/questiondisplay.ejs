@@ -59,7 +59,7 @@
                 </ol>
             </div>
             <form action="/displayelections/correspondingquestion/<%=id%>/<%= questionID %>/options" method="post">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                 <div class="flex gap-2 py-4">
                     <div class="flex-auto">
                         <input type="text" name="optionname" placeholder="Enter an option" class="border border-gray-500 text-gray-900 w-full rounded p-2 ">

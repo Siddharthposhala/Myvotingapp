@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="csrf-token" content="<%= csrfToken %>">
     <script src="https://cdn.tailwindcss.com"></script>
     <title></title>
 </head>
@@ -18,7 +19,7 @@
             <div class="mt-4 bg-white shadow-md rounded-lg text-left" style="background-color: cornsilk;">
     
                 <form action="/vote/<%=publicurl%>" method="post" class="px-8 py-6">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                   <input type="hidden" name="_csrf" value="<%= csrfToken %>" /> 
                     <div>
                     <label for="voterid"  class="border border-gray-300 text-gray-900 rounded ">VoterID</label>
                     <input id="voterid" name="voterid" type="voterid" placeholder="voterID" class="border border-gray-300 text-gray-900 rounded p-2 w-full" required>

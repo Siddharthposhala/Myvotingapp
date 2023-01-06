@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    csrf
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="<%= csrfToken %>">
-    <script src="https://cdn.tailwindcss.com"></script>
+   <meta name="csrf-token" content="<%= csrfToken %>">
     <title><%= title %></title>
     <script>
     </script>
@@ -31,7 +31,7 @@
                 </b>
                     <div class="pb-2 px-8">
                         <form action="/<%=electionID%>/externalpage/<%=publicurl%>" method="post" class="divide-y divide-solid">
-                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                             <ol class="list-decimal mb-5">
                                 <% for(let i=0; i<question.length; i++) { %>
                                     <li class="my-3">
@@ -63,6 +63,6 @@
             </div>
         </div>
     </div>
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+   <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
 </body>
 </html>
