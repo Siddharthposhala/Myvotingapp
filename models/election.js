@@ -2,11 +2,6 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Election extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       Election.belongsTo(models.Admin, {
         foreignKey: "adminId",
@@ -17,6 +12,70 @@ module.exports = (sequelize, DataTypes) => {
       Election.hasMany(models.Voters, {
         foreignKey: "electionId",
       });
+    }
+
+    static addElections({ electionName, adminId, publicurl }) {
+      return this.create({
+        electionName,
+        publicurl,
+        adminId,
+      });
+    }
+    static getPublicurl(publicurl) {
+      return this.findOne({
+        where: {
+          publicurl,
+        },
+      });
+    }
+    static getElectionurl(publicurl) {
+      return this.findOne({
+        where: {
+          publicurl,
+        },
+        order: [["id", "ASC"]],
+      });
+    }
+    static getElection(adminId) {
+      return this.findOne({
+        where: {
+          adminId,
+        },
+        order: [["id", "ASC"]],
+      });
+    }
+    static getElections(adminId) {
+      return this.findAll({
+        where: {
+          adminId,
+        },
+        order: [["id", "ASC"]],
+      });
+    }
+
+    static launch(id) {
+      return this.update(
+        {
+          launched: true,
+        },
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
+    }
+    static end(id) {
+      return this.Election.update(
+        {
+          ended: true,
+        },
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
     }
   }
   Election.init(

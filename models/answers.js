@@ -2,11 +2,6 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class answers extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       answers.belongsTo(models.Election, {
         foreignKey: "ElectionId",
@@ -21,6 +16,15 @@ module.exports = (sequelize, DataTypes) => {
       });
       answers.belongsTo(models.options, {
         foreignKey: "chossedoption",
+      });
+    }
+
+    static addResponse({ VoterId, ElectionId, QuestionId, chossedoption }) {
+      return this.create({
+        ElectionId,
+        QuestionId,
+        VoterId,
+        chossedoption,
       });
     }
   }
