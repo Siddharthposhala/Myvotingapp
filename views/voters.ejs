@@ -24,8 +24,10 @@
     </script>
     <title><%= title %></title>
 </head>
-<body style="background-color: cornsilk;">
-    <%- include('heading.ejs') %>
+<body>
+    <div class="grid grid-cols-3">
+        <div class="col-start-2 colspan-3">
+            <%- include('heading.ejs') %>
             <div class="grid grid-cols-6">
                 <div class="col-start-3 col-span-2">
             <center>
@@ -80,5 +82,7 @@
             </div>
         </div>
     </div>
+</div>
+</div>
 </body>
 </html>

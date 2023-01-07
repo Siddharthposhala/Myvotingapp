@@ -60,11 +60,11 @@ passport.use(
           if (result) {
             return done(null, user);
           } else {
-            return done(null, false, { message: "Invalid Password!!!" });
+            return done(null, false, { message: "Invalid Email or Password" });
           }
         })
         .catch(() => {
-          return done(null, false, { message: "Invalid Email-Id!!!!" });
+          return done(null, false, { message: "Invalid Email or Password" });
         });
     }
   )
@@ -85,12 +85,12 @@ passport.use(
           if (result) {
             return done(null, user);
           } else {
-            return done(null, false, { message: "Invalid password" });
+            return done(null, false, { message: "Invalid Id or Password" });
           }
         })
         .catch(() => {
           return done(null, false, {
-            message: "invalid Id",
+            message: "Invalid Id or Password",
           });
         });
     }
@@ -146,7 +146,7 @@ app.get("/", (request, response) => {
     }
   } else {
     response.render("index", {
-      title: "Welcom To Online Voting Platform",
+      title: "Online Voting App",
     });
   }
 });
@@ -156,7 +156,7 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     response.render("index", {
-      title: "Online Voting interface",
+      title: "Online Voting App",
       csrfToken: request.csrfToken(),
     });
   }
@@ -173,7 +173,7 @@ app.get(
         const elections_list = await Election.getElections(request.user.id);
         if (request.accepts("html")) {
           response.render("elections", {
-            title: "Online Voting interface",
+            title: "Online Voting App",
             user,
             userName: username,
             elections_list,
@@ -198,7 +198,7 @@ app.get(
   async (request, response) => {
     if (request.user.case === "admins") {
       response.render("new", {
-        title: "Create an election",
+        title: "Create an Election",
         csrfToken: request.csrfToken(),
       });
     }
@@ -214,11 +214,11 @@ app.post(
   async (request, response) => {
     if (request.user.case === "admins") {
       if (request.body.electionName.length === 0) {
-        request.flash("error", "election name can not be empty!!");
+        request.flash("error", "Empty Election");
         return response.redirect("/create");
       }
       if (request.body.publicurl.length === 0) {
-        request.flash("error", "public url can not be empty!!");
+        request.flash("error", "Empty publicurl");
         return response.redirect("/create");
       }
 
@@ -230,7 +230,7 @@ app.post(
         });
         return response.redirect("/elections");
       } catch (error) {
-        request.flash("error", "URL is already Used!!");
+        request.flash("error", "URL Already Exists");
         console.log(error);
         return response.redirect("/create");
       }
@@ -243,7 +243,7 @@ app.post(
 app.get("/signup", (request, response) => {
   try {
     response.render("signup", {
-      title: "Create admin account",
+      title: "Create admin Account",
       csrfToken: request.csrfToken(),
     });
   } catch (err) {
@@ -256,7 +256,7 @@ app.get("/signout", (request, response, next) => {
     if (error) {
       return next(error);
     }
-    request.flash("success", "Signout successfully!!");
+    request.flash("success", "Signout Successfully");
     response.redirect("/");
   });
 });
@@ -266,26 +266,26 @@ app.get("/login", (request, response) => {
     return response.redirect("/elections");
   }
   response.render("login", {
-    title: "Login to your admin account",
+    title: "Login As Admin",
     csrfToken: request.csrfToken(),
   });
 });
 
 app.post("/admin", async (request, response) => {
   if (request.body.email.length == 0) {
-    request.flash("error", "email can not be empty!!");
+    request.flash("error", "Empty Email");
     return response.redirect("/signup");
   }
   if (request.body.firstName.length == 0) {
-    request.flash("error", "firstname can not be empty!!");
+    request.flash("error", "Empty Firstname");
     return response.redirect("/signup");
   }
   if (request.body.password.length == 0) {
-    request.flash("error", "password can not be empty!!");
+    request.flash("error", "Empty password");
     return response.redirect("/signup");
   }
   if (request.body.password.length <= 5) {
-    request.flash("error", "password length should be minimum of length 6!!");
+    request.flash("error", "Password must be atleast 6 characters");
     return response.redirect("/signup");
   }
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
@@ -301,13 +301,13 @@ app.post("/admin", async (request, response) => {
         console.log(err);
         response.redirect("/");
       } else {
-        request.flash("success", "Signup successfully!!");
+        request.flash("success", "Signup Successfully");
         response.redirect("/elections");
       }
     });
   } catch (error) {
     console.log(error);
-    request.flash("error", "User Already Exist with this mail!!");
+    request.flash("error", "User Already Exists");
     return response.redirect("/signup");
   }
 });
@@ -352,10 +352,7 @@ app.get(
       const questions1 = await questions.retrievequestions(request.params.id);
       const election = await Election.findByPk(request.params.id);
       if (election.launched) {
-        request.flash(
-          "error",
-          "Can not modify question while election is running!!"
-        );
+        request.flash("error", "Election is live can't modify questions");
         return response.redirect(`/listofelections/${request.params.id}`);
       }
       if (request.accepts("html")) {
@@ -393,11 +390,11 @@ app.post(
   async (request, response) => {
     if (request.user.case === "admins") {
       if (!request.body.questionname) {
-        request.flash("error", "Question can not be empty!!");
+        request.flash("error", "Empty Question");
         return response.redirect(`/questionscreate/${request.params.id}`);
       }
       if (request.body.questionname < 3) {
-        request.flash("error", "Question can not be less than 3 words!!");
+        request.flash("error", "Question must be at least 3 characters");
         return response.redirect(`/questionscreate/${request.params.id}`);
       }
 
@@ -406,7 +403,7 @@ app.post(
         request.body.questionname
       );
       if (questionexist) {
-        request.flash("error", "Sorry!! the question already used");
+        request.flash("error", "Question already exits");
         return response.redirect(`/questionscreate/${request.params.id}`);
       }
 
@@ -540,10 +537,7 @@ app.post(
   async (request, response) => {
     if (request.user.case === "admins") {
       if (request.body.questionname.length < 3) {
-        request.flash(
-          "error",
-          "Question can not be less than three characters"
-        );
+        request.flash("error", "Question must be atleast 3 characters");
         return response.redirect(
           `/elections/${request.params.electionId}/questions/${request.params.questionId}/modify`
         );
@@ -553,7 +547,7 @@ app.post(
         request.body.questionname
       );
       if (questionexist) {
-        request.flash("error", "Sorry!! the question already used");
+        request.flash("error", "Question already exixts");
         return response.redirect(
           `/elections/${request.params.electionId}/questions/${request.params.questionId}/modify`
         );
@@ -726,15 +720,15 @@ app.post(
   async (request, response) => {
     if (request.user.case === "admins") {
       if (request.body.voterid.length == 0) {
-        request.flash("error", "Voter Id Can not be null!!");
+        request.flash("error", "Empty VoterId");
         return response.redirect(`/createvoter/${request.params.id}`);
       }
       if (request.body.password.length == 0) {
-        request.flash("error", "Password can not be empty!!");
+        request.flash("error", "Empty Password");
         return response.redirect(`/createvoter/${request.params.id}`);
       }
       if (request.body.password.length < 3) {
-        request.flash("error", "Password length can not be less than three!!");
+        request.flash("error", "Password must be atleast 3 characters");
         return response.redirect(`/createvoter/${request.params.id}`);
       }
       const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
@@ -743,10 +737,7 @@ app.post(
         return response.redirect(`/voters/${request.params.id}`);
       } catch (error) {
         console.log(error);
-        request.flash(
-          "error",
-          "Sorry!! It Seems like VoterId is already in Use"
-        );
+        request.flash("error", "VoterId already exixts");
         request.flash("error", "Kindly Use different VoterId");
         return response.redirect(`/createvoter/${request.params.id}`);
       }
@@ -815,30 +806,21 @@ app.get(
         where: { electionId: request.params.id },
       });
       if (question.length <= 1) {
-        request.flash(
-          "error",
-          "Please add atleast two question in the ballot!!"
-        );
+        request.flash("error", "Create at least 2 questions");
         return response.redirect(`/listofelections/${request.params.id}`);
       }
 
       for (let i = 0; i < question.length; i++) {
         const option = await options.retrieveoptions(question[i].id);
         if (option.length <= 1) {
-          request.flash(
-            "error",
-            "Kindly add atleast two options to the question!!!"
-          );
+          request.flash("error", "Create atleast 2 options");
           return response.redirect(`/listofelections/${request.params.id}`);
         }
       }
 
       const voters = await Voters.retrivevoters(request.params.id);
       if (voters.length <= 1) {
-        request.flash(
-          "error",
-          "There should be atleast two voter to lauch election"
-        );
+        request.flash("error", "Atleast 2 voters must to launch elections");
         return response.redirect(`/listofelections/${request.params.id}`);
       }
 
@@ -867,7 +849,7 @@ app.get(
         optionsnew.push(optionlist);
       }
       if (election.launched) {
-        request.flash("error", "You can not preview election while Running");
+        request.flash("error", "Election is launched can't preview");
         return response.redirect(`/listofelections/${request.params.id}`);
       }
 
@@ -904,7 +886,7 @@ app.get("externalpage/:publicurl/resultpage", async (request, response) => {
 
 app.get("/vote/:publicurl/", async (request, response) => {
   if (request.user === false) {
-    request.flash("error", "Kindly login before casting vote");
+    request.flash("error", "Login to vote");
     return response.redirect(`/externalpage/${request.params.publicurl}`);
   }
   const election = await Election.getElectionurl(request.params.publicurl);
@@ -939,7 +921,7 @@ app.get("/vote/:publicurl/", async (request, response) => {
     } else if (request.user.case === "admins") {
       request.flash(
         "error",
-        "Ooopss!! You can not vote as admin Signout as admin to vote.!!"
+        "Admin can't caste vote. To caste vote signin as voter"
       );
       return response.redirect(`/lisofelections/${election.id}`);
     }
@@ -982,7 +964,7 @@ app.get(
     if (request.user.case === "admins") {
       try {
         if (election.launched === false) {
-          request.flash("error", "election has not launched yet!!");
+          request.flash("error", "Election as not launched");
           return response.redirect(`/listofelections/${request.params.id}`);
         }
         await Election.end(request.params.id);
@@ -1013,44 +995,7 @@ app.post(
   "/adminpassword/reset",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    if (request.user.case === "admins") {
-      if (!request.body.oldpassword) {
-        request.flash("error", "oldpassword field can not be empty!!");
-        return response.redirect("/adminpassword/reset");
-      }
-      if (!request.body.newpassword) {
-        request.flash("error", "newpassword field can not be empty!!");
-        return response.redirect("/adminpassword/reset");
-      }
-      if (request.body.newpassword.length <= 5) {
-        request.flash("error", "password should be minimum of 6 letters");
-        return response.redirect("/adminpassword/reset");
-      }
-      const hashnewpassword = await bcrypt.hash(
-        request.body.newpassword,
-        saltRounds
-      );
-      const compare = await bcrypt.compare(
-        request.body.oldpassword,
-        request.user.password
-      );
-
-      if (compare) {
-        try {
-          const admin = await Admin.findadmin(request.user.email);
-          if (admin) {
-            await Admin.updatepassword(hashnewpassword, admin.email);
-            request.flash("success", "Password changed successfully");
-            return response.redirect("/elections");
-          }
-        } catch (error) {
-          return response.status(422).json(error);
-        }
-      } else {
-        request.flash("error", "Kindly check the old password!!");
-        return response.redirect("/adminpassword/reset");
-      }
-    }
+    console.log("pending");
   }
 );
 

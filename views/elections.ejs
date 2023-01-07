@@ -1,38 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <title><%= title %></title>
-</head>
-<body style="background-color:cornsilk;">
-    <div align="center">
-    <%- include('heading.ejs') %>
-   </div>
-   <center>
-    <b style="font-size: larger;"> Welcome <%=userName%>!!</b>
- </center>
-    <div class="my-3 mx-6" >
-        <div class="flex gap-2 py-4 justify-between">
-            <div> 
-            <b>
-            <h5 class="text-xl">My Elections List</h5>
-            </b>
-        </div>  
-            <div class="text-white bg-green-600 hover:bg-green-900 font-medium rounded px-5 py-2">
-                <a href="create" class="text-white"> create a new election</a>
-            </div>
-       
-        </div>
-    
+  </head>
+  <body>
+    <div class="grid grid-cols-5">
+      <div class="col-start-3 colspan-3">
+        <%- include('heading.ejs') %>
         <div class="flex-auto">
-            <%- include('lists_of_elections.ejs') %>
+          <h1>
+            Welcome :
+            <span class="text-green-600"> <%=userName%> </span>
+          </h1>
         </div>
-    </div>
+
+        <div class="flex-auto py-4">
+          <h1>My Elections List :</h1>
         </div>
+        <%- include('lists_of_elections.ejs') %>
+
+        <div class="flex gap-1 py-5 justify-between">
+          <div
+            class="text-white bg-green-600 hover:bg-green-700 font-small rounded px-3 py-2"
+          >
+            <a href="create" class="text-white"> create a new election</a>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
-</center>
+  </body>
 </html>
