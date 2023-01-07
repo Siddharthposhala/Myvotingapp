@@ -4,14 +4,7 @@ const express = require("express");
 const app = express();
 const csrf = require("tiny-csrf");
 const cookieParser = require("cookie-parser");
-const {
-  Admin,
-  Election,
-  questions,
-  options,
-  Voters,
-  Answers,
-} = require("./models");
+const { Admin, Election, questions, options, Voters } = require("./models");
 const bodyParser = require("body-parser");
 const connectEnsureLogin = require("connect-ensure-login");
 const LocalStratergy = require("passport-local");
@@ -69,6 +62,7 @@ passport.use(
     }
   )
 );
+
 passport.use(
   "voter-local",
   new LocalStratergy(
@@ -202,9 +196,6 @@ app.get(
         csrfToken: request.csrfToken(),
       });
     }
-    if (request.user.case === "voters") {
-      return response.redirect("/");
-    }
   }
 );
 
@@ -234,8 +225,6 @@ app.post(
         console.log(error);
         return response.redirect("/create");
       }
-    } else if (request.user.role === "voter") {
-      return response.redirect("/");
     }
   }
 );
@@ -302,6 +291,7 @@ app.get(
     }
   }
 );
+
 app.get(
   "/questions/:id",
   connectEnsureLogin.ensureLoggedIn(),
@@ -568,178 +558,6 @@ app.get(
   }
 );
 
-app.get(
-  "/election/:id/launch",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      const question = await questions.findAll({
-        where: { electionId: request.params.id },
-      });
-      if (question.length <= 1) {
-        request.flash("error", "Create at least 2 questions");
-        return response.redirect(`/listofelections/${request.params.id}`);
-      }
-
-      for (let i = 0; i < question.length; i++) {
-        const option = await options.retrieveoptions(question[i].id);
-        if (option.length <= 1) {
-          request.flash("error", "Create atleast 2 options");
-          return response.redirect(`/listofelections/${request.params.id}`);
-        }
-      }
-
-      const voters = await Voters.retrivevoters(request.params.id);
-      if (voters.length <= 1) {
-        request.flash("error", "Atleast 2 voters must to launch elections");
-        return response.redirect(`/listofelections/${request.params.id}`);
-      }
-
-      try {
-        await Election.launch(request.params.id);
-        return response.redirect(`/listofelections/${request.params.id}`);
-      } catch (error) {
-        console.log(error);
-        return response.send(error);
-      }
-    }
-  }
-);
-
-app.get(
-  "/election/:id/electionpreview",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      const election = await Election.findByPk(request.params.id);
-      const optionsnew = [];
-      const question = await questions.retrievequestions(request.params.id);
-
-      for (let i = 0; i < question.length; i++) {
-        const optionlist = await options.retrieveoptions(question[i].id);
-        optionsnew.push(optionlist);
-      }
-      if (election.launched) {
-        request.flash("error", "Election is launched can't preview");
-        return response.redirect(`/listofelections/${request.params.id}`);
-      }
-
-      response.render("electionpreview", {
-        election: election,
-        questions: question,
-        options: optionsnew,
-        csrf: request.csrfToken(),
-      });
-    }
-  }
-);
-
-app.get("/externalpage/:publicurl", async (request, response) => {
-  try {
-    const election = await Election.getElectionurl(request.params.publicurl);
-    if (election.launched && !election.ended) {
-      return response.render("voterlogin", {
-        publicurl: election.publicurl,
-        csrfToken: request.csrfToken(),
-      });
-    } else {
-      response.render("resultpage");
-    }
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
-
-app.get("externalpage/:publicurl/resultpage", async (request, response) => {
-  response.render("resultpage");
-});
-
-app.get(
-  "/election/:id/end",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      try {
-        if (election.launched === false) {
-          request.flash("error", "Election as not launched");
-          return response.redirect(`/listofelections/${request.params.id}`);
-        }
-        await Election.end(request.params.id);
-        return response.redirect(`/listofelections/${request.params.id}`);
-      } catch (error) {
-        console.log(error);
-        return response.send(error);
-      }
-    }
-  }
-);
-
-app.get(
-  "/adminpassword/reset",
-  connectEnsureLogin.ensureLoggedIn(),
-  (request, response) => {
-    if (request.user.case === "admins") {
-      response.render("adminpasswordreset", {
-        csrfToken: request.csrfToken(),
-      });
-    } else if (request.user.case == "voters") {
-      return response.redirect();
-    }
-  }
-);
-
-app.get("/vote/:publicurl/", async (request, response) => {
-  if (request.user === false) {
-    request.flash("error", "Login to vote");
-    return response.redirect(`/externalpage/${request.params.publicurl}`);
-  }
-  const election = await Election.getElectionurl(request.params.publicurl);
-
-  if (request.user.voted && election.launched) {
-    return response.redirect(`/vote/${request.params.publicurl}/endpage`);
-  }
-
-  try {
-    const election = await Election.getElectionurl(request.params.publicurl);
-    if (request.user.case === "voters") {
-      if (election.launched) {
-        const question = await questions.retrievequestions(election.id);
-        let optionsnew = [];
-        for (let i = 0; i < question.length; i++) {
-          const optionlist = await options.retrieveoptions(question[i].id);
-          optionsnew.push(optionlist);
-        }
-
-        return response.render("voterview", {
-          publicurl: request.params.publicurl,
-          id: election.id,
-          title: election.electionName,
-          electionId: election.id,
-          question,
-          optionsnew,
-          csrfToken: request.csrfToken(),
-        });
-      } else {
-        return response.render("invalid");
-      }
-    } else if (request.user.case === "admins") {
-      request.flash(
-        "error",
-        "Admin can't caste vote. To caste vote signin as voter"
-      );
-      return response.redirect(`/lisofelections/${election.id}`);
-    }
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
-
-app.get("/vote/:publicurl/endpage", async (request, response) => {
-  response.render("endpage");
-});
-
 app.post("/admin", async (request, response) => {
   if (request.body.email.length == 0) {
     request.flash("error", "Empty Email");
@@ -817,28 +635,6 @@ app.post(
   }
 );
 
-app.post("/:electionId/externalpage/:publicurl", async (request, response) => {
-  try {
-    let election = await Election.findByPk(request.params.electionId);
-    let questionslist = await questions.retrievequestion(election.id);
-    for (let i = 0; i < questionslist.length; i++) {
-      let questionid = `question-${questionslist[i].id}`;
-      let chossedoption = request.body[questionid];
-      await Answers.addResponse({
-        ElectionId: request.params.electionId,
-        QuestionId: questionslist[i].id,
-        VoterId: request.user.id,
-        chossedoption: chossedoption,
-      });
-    }
-    await Voters.votecompleted(request.user.id);
-    return response.render("finalpage");
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
-
 app.post(
   "/displayelections/correspondingquestion/:id/:questionId/options",
   connectEnsureLogin.ensureLoggedIn(),
@@ -884,17 +680,6 @@ app.post(
         return;
       }
     }
-  }
-);
-
-app.post(
-  "/vote/:publicurl",
-  passport.authenticate("voter-local", {
-    failureRedirect: "back",
-    failureFlash: true,
-  }),
-  async (request, response) => {
-    return response.redirect(`/vote/${request.params.publicurl}`);
   }
 );
 
@@ -945,14 +730,6 @@ app.post(
         return;
       }
     }
-  }
-);
-
-app.post(
-  "/adminpassword/reset",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    console.log("pending");
   }
 );
 

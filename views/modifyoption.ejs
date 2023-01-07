@@ -39,6 +39,15 @@
             </a>
           </div>
         </form>
+        <div class="py-3">
+          <% if(messages && messages.error && messages.error.length > 0)  { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                  <div class=" text-red-600" >
+                    <li> <%= messages.error[i] %></li>
+                  </div>
+            <% } %>
+          <% } %> 
+        </div> 
       </div>
     </div>
   </body>
