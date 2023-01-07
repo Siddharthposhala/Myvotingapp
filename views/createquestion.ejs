@@ -9,24 +9,39 @@
     <title>New question</title>
 </head>
 <body>
-    <div style="background-color: lightskyblue;">
-    <div class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden">
-        <div class="relative py-3 sm:w-96 mx-auto text-center">
-            <span class="text-2xl font-light ">Add a new Question</span>
-            <div>
-            </div>
-            <div class="mt-4 bg-white shadow-md rounded-lg text-left " style="background-color: antiquewhite;">
-                <div class="h-2 rounded-t-md"></div>
+    <div class="grid grid-cols-3">
+        <div class="col-start-2 colspan-3">
+            <h1 class="text-2xl font-semibold text-black-600">
+                Add a new Question
+            </h1>
                 <form action="/questionscreate/<%= id %>" method="post" class="px-8 py-6">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                    <label for="questionname" class="block mt-3 font-semibold">What is the question?</label>
-                    <input id="questionname" name="questionname" type="text" placeholder="Question" class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" >
-                    <label for="description" class="block mt-3 font-semibold">Description</label>
-                    <textarea id="description" name="description" class="border w-full px-2 py-1 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"></textarea>
-                    <center>
-                    <button type="submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2 justify-right">create</button>
-                    <a href="/questions/<%=id%> " class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-5 py-2 justify-right">Cancel</a>
-                    </center>
+
+                    <div class="py-3">
+                    <label for="questionname">
+                    Question</label>
+                    <input id="questionname" name="questionname" 
+                    type="text" placeholder="Question" 
+                    class="border border-gray-300 rounded text-gray-900 w-full p-2">
+                    </div>
+
+                    <div class="py-3">
+                    <label for="description" >
+                    Description</label>
+                    <textarea id="description" name="description" 
+                    class="border border-gray-300 rounded text-gray-900 w-full p-2">
+                    </textarea>
+                    </div>
+
+                    <div class="py-3">
+                    <button type="submit" 
+                    class="bg-green-600 text-white px-5 py-2 rounded font-medium mr-2 mb-2">
+                    create</button>
+                    <a href="/questions/<%=id%> " 
+                        class="bg-red-600 text-white px-5 py-2.5 rounded font-medium ml-10 mb-2">
+                    Cancel</a>
+                    </div>
+
                 </form>
             </div>  
         </div>

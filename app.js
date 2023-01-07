@@ -271,47 +271,6 @@ app.get("/login", (request, response) => {
   });
 });
 
-app.post("/admin", async (request, response) => {
-  if (request.body.email.length == 0) {
-    request.flash("error", "Empty Email");
-    return response.redirect("/signup");
-  }
-  if (request.body.firstName.length == 0) {
-    request.flash("error", "Empty Firstname");
-    return response.redirect("/signup");
-  }
-  if (request.body.password.length == 0) {
-    request.flash("error", "Empty password");
-    return response.redirect("/signup");
-  }
-  if (request.body.password.length <= 5) {
-    request.flash("error", "Password must be atleast 6 characters");
-    return response.redirect("/signup");
-  }
-  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-  try {
-    const user = await Admin.create({
-      firstName: request.body.firstName,
-      lastName: request.body.lastName,
-      email: request.body.email,
-      password: hashedPwd,
-    });
-    request.login(user, (err) => {
-      if (err) {
-        console.log(err);
-        response.redirect("/");
-      } else {
-        request.flash("success", "Signup Successfully");
-        response.redirect("/elections");
-      }
-    });
-  } catch (error) {
-    console.log(error);
-    request.flash("error", "User Already Exists");
-    return response.redirect("/signup");
-  }
-});
-
 app.get(
   "/listofelections/:id",
   connectEnsureLogin.ensureLoggedIn(),
@@ -351,7 +310,7 @@ app.get(
       await Election.getElections(request.params.id, request.user.id);
       const questions1 = await questions.retrievequestions(request.params.id);
       const election = await Election.findByPk(request.params.id);
-      if (election.launched) {
+      if (!election.launched) {
         request.flash("error", "Election is live can't modify questions");
         return response.redirect(`/listofelections/${request.params.id}`);
       }
@@ -455,64 +414,6 @@ app.get(
   }
 );
 
-app.delete(
-  "/deletequestion/:id",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      try {
-        const res = await questions.removequestion(request.params.id);
-        return response.json({ success: res === 1 });
-      } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
-      }
-    }
-  }
-);
-
-app.post(
-  "/displayelections/correspondingquestion/:id/:questionId/options",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      if (!request.body.optionname) {
-        request.flash("error", "Option can not be empty");
-        return response.redirect(
-          `/displayelections/correspondingquestion/${request.params.id}/${request.params.questionId}/options`
-        );
-      }
-      try {
-        await options.addoption({
-          optionname: request.body.optionname,
-          questionId: request.params.questionId,
-        });
-        return response.redirect(
-          `/displayelections/correspondingquestion/${request.params.id}/${request.params.questionId}/options/`
-        );
-      } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
-      }
-    }
-  }
-);
-
-app.delete(
-  "/:id/deleteoptions",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      try {
-        const res = await options.removeoptions(request.params.id);
-        return response.json({ success: res === 1 });
-      } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
-      }
-    }
-  }
-);
 app.get(
   "/elections/:electionId/questions/:questionId/modify",
   connectEnsureLogin.ensureLoggedIn(),
@@ -531,41 +432,7 @@ app.get(
     }
   }
 );
-app.post(
-  "/elections/:electionId/questions/:questionId/modify",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      if (request.body.questionname.length < 3) {
-        request.flash("error", "Question must be atleast 3 characters");
-        return response.redirect(
-          `/elections/${request.params.electionId}/questions/${request.params.questionId}/modify`
-        );
-      }
-      const questionexist = await questions.findquestion(
-        request.params.electionId,
-        request.body.questionname
-      );
-      if (questionexist) {
-        request.flash("error", "Question already exixts");
-        return response.redirect(
-          `/elections/${request.params.electionId}/questions/${request.params.questionId}/modify`
-        );
-      }
-      try {
-        await questions.modifyquestion(
-          request.body.questionname,
-          request.body.description,
-          request.params.questionId
-        );
-        response.redirect(`/questions/${request.params.electionId}`);
-      } catch (error) {
-        console.log(error);
-        return;
-      }
-    }
-  }
-);
+
 app.get(
   "/elections/:electionId/questions/:questionId/options/:optionId/modify",
   connectEnsureLogin.ensureLoggedIn(),
@@ -583,26 +450,6 @@ app.get(
         option: option,
         csrf: request.csrfToken(),
       });
-    }
-  }
-);
-app.post(
-  "/elections/:electionId/questions/:questionId/options/:optionId/modify",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      try {
-        await options.modifyoption(
-          request.body.optionname,
-          request.params.optionId
-        );
-        response.redirect(
-          `/displayelections/correspondingquestion/${request.params.electionId}/${request.params.questionId}/options`
-        );
-      } catch (error) {
-        console.log(error);
-        return;
-      }
     }
   }
 );
@@ -631,6 +478,7 @@ app.get(
     }
   }
 );
+
 app.get("/voters/listofelections/:id", async (request, response) => {
   if (request.user.case === "admins") {
     try {
@@ -703,48 +551,6 @@ app.get(
   }
 );
 
-app.post(
-  "/vote/:publicurl",
-  passport.authenticate("voter-local", {
-    failureRedirect: "back",
-    failureFlash: true,
-  }),
-  async (request, response) => {
-    return response.redirect(`/vote/${request.params.publicurl}`);
-  }
-);
-
-app.post(
-  "/createvoter/:id",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      if (request.body.voterid.length == 0) {
-        request.flash("error", "Empty VoterId");
-        return response.redirect(`/createvoter/${request.params.id}`);
-      }
-      if (request.body.password.length == 0) {
-        request.flash("error", "Empty Password");
-        return response.redirect(`/createvoter/${request.params.id}`);
-      }
-      if (request.body.password.length < 3) {
-        request.flash("error", "Password must be atleast 3 characters");
-        return response.redirect(`/createvoter/${request.params.id}`);
-      }
-      const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-      try {
-        await Voters.add(request.body.voterid, hashedPwd, request.params.id);
-        return response.redirect(`/voters/${request.params.id}`);
-      } catch (error) {
-        console.log(error);
-        request.flash("error", "VoterId already exixts");
-        request.flash("error", "Kindly Use different VoterId");
-        return response.redirect(`/createvoter/${request.params.id}`);
-      }
-    }
-  }
-);
-
 app.get(
   "/elections/:electionId/voter/:voterId/edit",
   connectEnsureLogin.ensureLoggedIn(),
@@ -758,41 +564,6 @@ app.get(
         election: election,
         csrf: request.csrfToken(),
       });
-    }
-  }
-);
-
-app.post(
-  "/elections/:electionId/voter/:voterId/modify",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      try {
-        await Voters.modifypassword(
-          request.params.voterId,
-          request.body.password
-        );
-        response.redirect(`/voters/${request.params.electionId}`);
-      } catch (error) {
-        console.log(error);
-        return;
-      }
-    }
-  }
-);
-
-app.delete(
-  "/:id/voterdelete",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.case === "admins") {
-      try {
-        const res = await Voters.delete(request.params.id);
-        return response.json({ success: res === 1 });
-      } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
-      }
     }
   }
 );
@@ -884,6 +655,40 @@ app.get("externalpage/:publicurl/resultpage", async (request, response) => {
   response.render("resultpage");
 });
 
+app.get(
+  "/election/:id/end",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.user.case === "admins") {
+      try {
+        if (election.launched === false) {
+          request.flash("error", "Election as not launched");
+          return response.redirect(`/listofelections/${request.params.id}`);
+        }
+        await Election.end(request.params.id);
+        return response.redirect(`/listofelections/${request.params.id}`);
+      } catch (error) {
+        console.log(error);
+        return response.send(error);
+      }
+    }
+  }
+);
+
+app.get(
+  "/adminpassword/reset",
+  connectEnsureLogin.ensureLoggedIn(),
+  (request, response) => {
+    if (request.user.case === "admins") {
+      response.render("adminpasswordreset", {
+        csrfToken: request.csrfToken(),
+      });
+    } else if (request.user.case == "voters") {
+      return response.redirect();
+    }
+  }
+);
+
 app.get("/vote/:publicurl/", async (request, response) => {
   if (request.user === false) {
     request.flash("error", "Login to vote");
@@ -935,6 +740,83 @@ app.get("/vote/:publicurl/endpage", async (request, response) => {
   response.render("endpage");
 });
 
+app.post("/admin", async (request, response) => {
+  if (request.body.email.length == 0) {
+    request.flash("error", "Empty Email");
+    return response.redirect("/signup");
+  }
+  if (request.body.firstName.length == 0) {
+    request.flash("error", "Empty Firstname");
+    return response.redirect("/signup");
+  }
+  if (request.body.password.length == 0) {
+    request.flash("error", "Empty password");
+    return response.redirect("/signup");
+  }
+  if (request.body.password.length <= 5) {
+    request.flash("error", "Password must be atleast 6 characters");
+    return response.redirect("/signup");
+  }
+  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+  try {
+    const user = await Admin.create({
+      firstName: request.body.firstName,
+      lastName: request.body.lastName,
+      email: request.body.email,
+      password: hashedPwd,
+    });
+    request.login(user, (err) => {
+      if (err) {
+        console.log(err);
+        response.redirect("/");
+      } else {
+        request.flash("success", "Signup Successfully");
+        response.redirect("/elections");
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    request.flash("error", "User Already Exists");
+    return response.redirect("/signup");
+  }
+});
+
+app.post(
+  "/elections/:electionId/questions/:questionId/modify",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.user.case === "admins") {
+      if (request.body.questionname.length < 3) {
+        request.flash("error", "Question must be atleast 3 characters");
+        return response.redirect(
+          `/elections/${request.params.electionId}/questions/${request.params.questionId}/modify`
+        );
+      }
+      const questionexist = await questions.findquestion(
+        request.params.electionId,
+        request.body.questionname
+      );
+      if (questionexist) {
+        request.flash("error", "Question already exixts");
+        return response.redirect(
+          `/elections/${request.params.electionId}/questions/${request.params.questionId}/modify`
+        );
+      }
+      try {
+        await questions.modifyquestion(
+          request.body.questionname,
+          request.body.description,
+          request.params.questionId
+        );
+        response.redirect(`/questions/${request.params.electionId}`);
+      } catch (error) {
+        console.log(error);
+        return;
+      }
+    }
+  }
+);
+
 app.post("/:electionId/externalpage/:publicurl", async (request, response) => {
   try {
     let election = await Election.findByPk(request.params.electionId);
@@ -957,36 +839,111 @@ app.post("/:electionId/externalpage/:publicurl", async (request, response) => {
   }
 });
 
-app.get(
-  "/election/:id/end",
+app.post(
+  "/displayelections/correspondingquestion/:id/:questionId/options",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     if (request.user.case === "admins") {
+      if (!request.body.optionname) {
+        request.flash("error", "Option can not be empty");
+        return response.redirect(
+          `/displayelections/correspondingquestion/${request.params.id}/${request.params.questionId}/options`
+        );
+      }
       try {
-        if (election.launched === false) {
-          request.flash("error", "Election as not launched");
-          return response.redirect(`/listofelections/${request.params.id}`);
-        }
-        await Election.end(request.params.id);
-        return response.redirect(`/listofelections/${request.params.id}`);
+        await options.addoption({
+          optionname: request.body.optionname,
+          questionId: request.params.questionId,
+        });
+        return response.redirect(
+          `/displayelections/correspondingquestion/${request.params.id}/${request.params.questionId}/options/`
+        );
       } catch (error) {
         console.log(error);
-        return response.send(error);
+        return response.status(422).json(error);
       }
     }
   }
 );
 
-app.get(
-  "/adminpassword/reset",
+app.post(
+  "/elections/:electionId/questions/:questionId/options/:optionId/modify",
   connectEnsureLogin.ensureLoggedIn(),
-  (request, response) => {
+  async (request, response) => {
     if (request.user.case === "admins") {
-      response.render("adminpasswordreset", {
-        csrfToken: request.csrfToken(),
-      });
-    } else if (request.user.case == "voters") {
-      return response.redirect();
+      try {
+        await options.modifyoption(
+          request.body.optionname,
+          request.params.optionId
+        );
+        response.redirect(
+          `/displayelections/correspondingquestion/${request.params.electionId}/${request.params.questionId}/options`
+        );
+      } catch (error) {
+        console.log(error);
+        return;
+      }
+    }
+  }
+);
+
+app.post(
+  "/vote/:publicurl",
+  passport.authenticate("voter-local", {
+    failureRedirect: "back",
+    failureFlash: true,
+  }),
+  async (request, response) => {
+    return response.redirect(`/vote/${request.params.publicurl}`);
+  }
+);
+
+app.post(
+  "/createvoter/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.user.case === "admins") {
+      if (request.body.voterid.length == 0) {
+        request.flash("error", "Empty VoterId");
+        return response.redirect(`/createvoter/${request.params.id}`);
+      }
+      if (request.body.password.length == 0) {
+        request.flash("error", "Empty Password");
+        return response.redirect(`/createvoter/${request.params.id}`);
+      }
+      if (request.body.password.length < 3) {
+        request.flash("error", "Password must be atleast 3 characters");
+        return response.redirect(`/createvoter/${request.params.id}`);
+      }
+      const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+      try {
+        await Voters.add(request.body.voterid, hashedPwd, request.params.id);
+        return response.redirect(`/voters/${request.params.id}`);
+      } catch (error) {
+        console.log(error);
+        request.flash("error", "VoterId already exixts");
+        request.flash("error", "Kindly Use different VoterId");
+        return response.redirect(`/createvoter/${request.params.id}`);
+      }
+    }
+  }
+);
+
+app.post(
+  "/elections/:electionId/voter/:voterId/modify",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.user.case === "admins") {
+      try {
+        await Voters.modifypassword(
+          request.params.voterId,
+          request.body.password
+        );
+        response.redirect(`/voters/${request.params.electionId}`);
+      } catch (error) {
+        console.log(error);
+        return;
+      }
     }
   }
 );
@@ -996,6 +953,54 @@ app.post(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     console.log("pending");
+  }
+);
+
+app.delete(
+  "/:id/deleteoptions",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.user.case === "admins") {
+      try {
+        const res = await options.removeoptions(request.params.id);
+        return response.json({ success: res === 1 });
+      } catch (error) {
+        console.log(error);
+        return response.status(422).json(error);
+      }
+    }
+  }
+);
+
+app.delete(
+  "/:id/voterdelete",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.user.case === "admins") {
+      try {
+        const res = await Voters.delete(request.params.id);
+        return response.json({ success: res === 1 });
+      } catch (error) {
+        console.log(error);
+        return response.status(422).json(error);
+      }
+    }
+  }
+);
+
+app.delete(
+  "/deletequestion/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.user.case === "admins") {
+      try {
+        const res = await questions.removequestion(request.params.id);
+        return response.json({ success: res === 1 });
+      } catch (error) {
+        console.log(error);
+        return response.status(422).json(error);
+      }
+    }
   }
 );
 
