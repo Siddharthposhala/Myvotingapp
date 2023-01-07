@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="grid grid-cols-5">
-           <div class="col-start-3 colspan-4">
+           <div class="col-start-3 colspan-2">
            <%- include('heading.ejs') %>
            <div class="py-6">
                <% if (election.ended) { %>
@@ -44,29 +44,34 @@
                <h2 class="my-2 text-lg text-black flex gap-1">No of Voters<span class="text-black-600"> <%= countvoters %> </span></h2>
                <a href="/voters/<%=id %>" class="py-1 hover:text-blue-800 text-blue-600">Modify Voters</a>
            </div>
-
+        </div>
+        <div class="col-start-3 colspan-1">
            <div class="py-3">
-               <a href="#" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-4 py-2 mr-4">
+               <a href="#" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-1 py-2">
                    Launch Election
                 </a>
-                <a href="" class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-8 py-2">
+            </div>
+            <div class="py-3">
+                <a href="" class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-4 py-2">
                     End Election
                 </a>
             </div>
             <div class="py-3">
                 <a href="#" 
-                    class="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded mr-4 px-4 py-2">
+                    class="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded px-1 py-2">
                     Preview election
                 </a>
-               <a href="" class="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded px-5 py-2">
+            </div>    <div class="py-3">
+               <a href="" class="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded px-1.5 py-2">
                    Preview Results
                 </a>
            </div>
            <div class="py-3">
-           <a href="/elections" class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-12 py-2">
+           <a href="/elections" class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-8 py-2">
                Go Back
             </a>
-       </div>
+            </div>
+         </div>
 
          
                <div class="py-3">
@@ -80,7 +85,7 @@
                </div>
            
 
-        </div>
+        
     </div>
 </body>
 </html>
