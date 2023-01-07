@@ -41,10 +41,9 @@
             <div class="py-2">
                 <p class="text-red-600"><%= (questions.length==0) ? "******** Empty Questions ********" : "" %> </p>
                     <% for (let i=0; i<questions.length; i++) { %>
-                        
                             <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50 Todo-item">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                                <%= questions[i].id %>.
+                                <%= i+1 %>.
                                 <%= questions[i].questionname %>
                                 <a href="/displayelections/correspondingquestion/<%=election.id%>/<%=questions[i].id%>/options"
                                     class="py-1 ml-3 mr-3 hover:text-blue-800 text-blue-600">
