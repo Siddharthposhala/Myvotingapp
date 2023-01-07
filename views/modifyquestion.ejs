@@ -1,49 +1,45 @@
 <html>
   <head>
-    <title>Edit Question | Online Voting Platform</title>
+    <title>Edit Question</title>
     <meta name="csrf-token" content="<%= csrf %>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body style="background-color: lightskyblue;">
-    <div class="flex flex-col justify-center items-center p-4">
-      <div class="flex flex-col justify-center md:w-2/5 w-full">
-        <div class="pt-6">
-          <b>
-            <p class="text-black-600" align="center">edit question</p>
-          </b>
+  <body>
+    <div class="grid grid-cols-3">
+      <div class="col-start-2 colspan-3">
+        <h1 class="text-2xl font-semibold text-black-600">Modify Question</h1>
             <form
               method="post"
               action="/elections/<%=election.id%>/questions/<%=question.id%>/modify">
              <input type="hidden" name="_csrf" value="<%= csrf %>">
-              <div class="flex flex-col w-full">
+              <div class="py-8">
+                <label for="questionname">Question Name : </label>
                 <input
                   type="text"
                   name="questionname"
-                  value="<%= question.questionname %>"
                   placeholder="questionname"
-                  class="border-2 border-black p-2 rounded-lg"
+                  class="border border-gray-300 rounded text-gray-900 w-full p-2"
                 />
               </div>
-              <div class="flex flex-col w-full">
+              <div class="py-3">
+                <label for="description">Description : </label>
                 <input
                   type="text"
                   name="description"
-                  value="<%= question.description %>"
                   placeholder="description"
-                  class="border-2 border-black p-2 rounded-lg"
+                  class="border border-gray-300 rounded text-gray-900 w-full p-2"
                 />
               </div>
-              <div class="flex justify-center items-center w-full gap-4">
+              <div class="py-3">
                 <button
                   type="submit"
-                  class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-3 py-1"
+                  class="bg-green-600 text-white px-5 py-2 rounded font-medium mr-2 mb-2"
                 >
                   Update
                 </button>
                 <a href="/questions/<%= election.id%>" type="reset"
-                  class="text-white bg-red-600 hover:bg-red-800 font-medium rounded px-3 py-1">
-                  
+                  class="bg-red-600 text-white px-5 py-2.5 rounded font-medium ml-10 mb-2">
                   Cancel
                 </a>
               </div>
